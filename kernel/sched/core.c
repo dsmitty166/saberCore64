@@ -6136,9 +6136,7 @@ static void __setscheduler(struct rq *rq, struct task_struct *p,
 
 	if (dl_policy(policy))
 		__setparam_dl(p, attr);
-	else if (rt_policy(policy))
-		p->rt_priority = attr->sched_priority;
-	else
+	else if (fair_policy(policy))
 		p->static_prio = NICE_TO_PRIO(attr->sched_nice);
 
 	/*
