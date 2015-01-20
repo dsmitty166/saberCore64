@@ -127,6 +127,7 @@ static void *get_cpu_dbs_info_s(int cpu)				\
  * od_*: On-demand governor
  * cs_*: Conservative governor
  * zz_*: ZZMoove governor
+ * ex_*: ElementalX governor
  */
 
 /* Per cpu structures */
@@ -170,11 +171,15 @@ struct cs_cpu_dbs_info_s {
 	unsigned int enable:1;
 };
 
-
 struct zz_cpu_dbs_info_s {
 	struct cpu_dbs_common_info cdbs;
 	unsigned int down_skip;
 	unsigned int requested_freq;
+	unsigned int enable:1;
+};
+
+struct ex_cpu_dbs_info_s {
+	struct cpu_dbs_common_info cdbs;
 	unsigned int enable:1;
 };
 
@@ -219,6 +224,18 @@ struct zz_dbs_tuners {
 	unsigned int afs_threshold4;
 };
 
+struct ex_dbs_tuners {
+	unsigned int ignore_nice_load;
+	unsigned int sampling_rate;
+	unsigned int up_threshold;
+	unsigned int down_differential;
+	unsigned int gboost;
+	unsigned int gboost_min_freq;
+	unsigned int input_event_timeout;
+	unsigned int input_min_freq;
+	unsigned int max_screen_off_freq;
+};
+
 /* Common Governor data across policies */
 struct dbs_data;
 struct common_dbs_data {
@@ -226,6 +243,7 @@ struct common_dbs_data {
 	#define GOV_ONDEMAND		0
 	#define GOV_CONSERVATIVE	1
 	#define GOV_ZZMOOVE		2
+	#define GOV_ELEMENTALX		3
 	int governor;
 	struct attribute_group *attr_group_gov_sys; /* one governor - system */
 	struct attribute_group *attr_group_gov_pol; /* one governor - policy */
