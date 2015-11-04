@@ -34,7 +34,7 @@ REPACK_DIR="${HOME}/android/AK-OnePone-AnyKernel2"
 PATCH_DIR="${HOME}/android/AK-OnePone-AnyKernel2/patch"
 MODULES_DIR="${HOME}/android/AK-OnePone-AnyKernel2/modules"
 ZIP_MOVE="${HOME}/android/AK-releases"
-ZIMAGE_DIR="${HOME}/android/angler/arch/arm64/boot/Image-dtb"
+ZIMAGE_DIR="${HOME}/android/angler/arch/arm64/boot/"
 
 # Functions
 function clean_all {
@@ -65,7 +65,7 @@ function make_dtb {
 }
 
 function make_boot {
-		cp -vr $ZIMAGE_DIR/Image-dtb ~/android/angler/out/kernel/zImage
+		cp -vr $ZIMAGE_DIR/Image ~/android/angler/out/kernel/zImage
 		
 		. appendramdisk.sh
 }
