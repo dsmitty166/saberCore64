@@ -151,8 +151,8 @@ case "$dchoice" in
 		make_kernel
 		make_dtb
 		make_modules
-		make_boot_m
-		make_zip_m
+		make_boot
+		make_zip
 		break
 		;;
 	n|N )
