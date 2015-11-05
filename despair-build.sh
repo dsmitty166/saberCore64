@@ -65,7 +65,7 @@ function make_dtb {
 }
 
 function make_boot {
-		cp -vr $ZIMAGE_DIR/Image ~/android/angler/out/kernel/zImage
+		cp -vr $ZIMAGE_DIR/Image.gz-dtb ~/android/angler/out/kernel/zImage
 		
 		. appendramdisk.sh
 }
