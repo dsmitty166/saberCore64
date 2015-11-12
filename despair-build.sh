@@ -15,7 +15,7 @@ DTBIMAGE="dtb"
 DEFCONFIG="kylo_defconfig"
 
 # Kernel Details
-VER=".R3.7.angler."
+VER=".R3.8.angler."
 AK_VER="$BASE_AK_VER$VER$TC"
 
 # Vars
