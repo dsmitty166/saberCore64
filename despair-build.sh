@@ -20,7 +20,7 @@ AK_VER="$BASE_AK_VER$VER"
 
 # Vars
 BASE_AK_VER="Kylo"
-AK_VER="$BASE_AK_VER$VER$TC"
+AK_VER="$BASE_AK_VER$VER"
 export LOCALVERSION=~`echo $AK_VER`
 export LOCALVERSION=~`echo $AK_VER`
 export ARCH=arm64
