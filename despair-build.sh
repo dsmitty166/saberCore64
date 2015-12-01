@@ -15,7 +15,7 @@ DTBIMAGE="dtb"
 DEFCONFIG="kylo_defconfig"
 
 # Kernel Details
-VER=".R5.3.angler"
+VER=".R5.4.angler"
 AK_VER="$BASE_AK_VER$VER"
 
 # Vars
@@ -92,7 +92,7 @@ while read -p "Do you want to use UBERTC(1) or SaberMod(2) or Linaro(3)? " echoi
 do
 case "$echoice" in
 	1 )
-		export CROSS_COMPILE=${HOME}/android/uberbuild/out/aarch64-linux-android-4.9-kernel/bin/aarch64-linux-android-
+		export CROSS_COMPILE=${HOME}/android/uberbuild/out/aarch64-linux-android-5.2-kernel/bin/aarch64-linux-android-
 		TC="UBER"
 		echo
 		echo "Using UBERTC"
