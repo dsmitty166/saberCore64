@@ -16,11 +16,10 @@ DEFCONFIG="kylo_defconfig"
 
 # Kernel Details
 VER=".R6.angler."
-AK_VER="$BASE_AK_VER$VER$TC"
 
 # Vars
 BASE_AK_VER="Kylo"
-AK_VER="$BASE_AK_VER$VER"
+AK_VER="$BASE_AK_VER$VER$TC"
 export LOCALVERSION=~`echo $AK_VER`
 export LOCALVERSION=~`echo $AK_VER`
 export ARCH=arm64
