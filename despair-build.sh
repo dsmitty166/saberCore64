@@ -15,17 +15,7 @@ DTBIMAGE="dtb"
 DEFCONFIG="kylo_defconfig"
 
 # Kernel Details
-VER=".R7.angler."
-
-# Vars
-BASE_AK_VER="Kylo"
-AK_VER="$BASE_AK_VER$VER$TC"
-export LOCALVERSION=~`echo $AK_VER`
-export LOCALVERSION=~`echo $AK_VER`
-export ARCH=arm64
-export SUBARCH=arm64
-export KBUILD_BUILD_USER=DespairFactor
-export KBUILD_BUILD_HOST=DarkRoom
+VER=".R8.angler."
 
 # Paths
 KERNEL_DIR=`pwd`
@@ -111,6 +101,16 @@ case "$echoice" in
 		;;
 esac
 done
+
+# Vars
+BASE_AK_VER="Kylo"
+AK_VER="$BASE_AK_VER$VER$TC"
+export LOCALVERSION=~`echo $AK_VER`
+export LOCALVERSION=~`echo $AK_VER`
+export ARCH=arm64
+export SUBARCH=arm64
+export KBUILD_BUILD_USER=DespairFactor
+export KBUILD_BUILD_HOST=DarkRoom
 
 echo
 
