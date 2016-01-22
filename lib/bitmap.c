@@ -561,7 +561,6 @@ static int __bitmap_parselist(const char *buf, unsigned int buflen,
 					return -EINVAL;
 				b = 0;
 				in_range = 1;
-				at_start = 1;
 				continue;
 			}
 
@@ -583,9 +582,11 @@ static int __bitmap_parselist(const char *buf, unsigned int buflen,
 			return -EINVAL;
 		if (b >= nmaskbits)
 			return -ERANGE;
-		while (a <= b) {
-			set_bit(a, maskp);
-			a++;
+		if (!at_start) {
+			while (a <= b) {
+				set_bit(a, maskp);
+				a++;
+			}
 		}
 	} while (buflen && c == ',');
 	return 0;
