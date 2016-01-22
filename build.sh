@@ -19,8 +19,17 @@ TOOLCHAIN_DIR="${HOME}/toolchain"
 
 # Kernel Details
 BASE_AK_VER="fuckery"
-AK_VER=".3.0"
-AK_VER="$BASE_VER$VER"
+VER=".3.0"
+AK_VER="$BASE_AK_VER$VER"
+
+
+# Vars
+export LOCALVERSION=~`echo $AK_VER`
+export CROSS_COMPILE="${HOME}/toolchain/UBERTC-aarch64-linux-android-6.0-kernel/bin/aarch64-linux-android-"
+export ARCH=arm64
+export SUBARCH=arm64
+export KBUILD_BUILD_USER=f100cleveland
+export KBUILD_BUILD_HOST=BuildBox
 
 # Paths
 REPACK_DIR="$ANYKERNEL_DIR"
@@ -83,25 +92,13 @@ echo "---------------"
 echo "Kernel Version:"
 echo "---------------"
 
-echo -e "${red}"; echo -e "${blink_red}"; echo "$VER"; echo -e "${restore}";
+echo -e "${red}"; echo -e "${blink_red}"; echo "$AK_VER"; echo -e "${restore}";
 
 echo -e "${green}"
 echo "-----------------"
 echo "Making sC64 Kernel:"
 echo "-----------------"
 echo -e "${restore}"
-
-# Vars
-BASE_AK_VER="saberCore"
-AK_VER="$BASE_AK_VER$VER$TC"
-export LOCALVERSION=~`echo $VER`
-export LOCALVERSION=~`echo $VER`
-export LOCALVERSION=~`echo $VER`
-export CROSS_COMPILE="${HOME}/toolchain/UBERTC-aarch64-linux-android-6.0-kernel/bin/aarch64-linux-android-"
-export ARCH=arm64
-export SUBARCH=arm64
-export KBUILD_BUILD_USER=f100cleveland
-export KBUILD_BUILD_HOST=BuildBox
 
 echo
 
