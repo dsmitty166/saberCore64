@@ -18,8 +18,8 @@ ANYKERNEL_DIR="${HOME}/kernel/sC-Angler-AnyKernel2"
 TOOLCHAIN_DIR="${HOME}/toolchain"
 
 # Kernel Details
-BASE_AK_VER=".fuckery"
-VER=".3.111"
+BASE_AK_VER="fuckery"
+VER=".3.111 "
 AK_VER="$BASE_AK_VER$VER"
 
 
