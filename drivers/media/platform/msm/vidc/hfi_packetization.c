@@ -127,7 +127,7 @@ static inline u32 get_hfi_layout(enum hal_buffer_layout_type hal_buf_layout)
 	return hfi_layout;
 }
 
-static inline u32 get_hfi_codec(enum hal_video_codec hal_codec)
+inline u32 get_hfi_codec(enum hal_video_codec hal_codec)
 {
 	u32 hfi_codec;
 	switch (hal_codec) {
