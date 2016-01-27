@@ -1027,8 +1027,8 @@ static void deconfigure_qcrypto(void)
 		req_crypt_queue = NULL;
 	}
 
-	kfree(ice_settings);
-	ice_settings = NULL;
+	if (_req_dm_scatterlist_pool)
+		kmem_cache_destroy(_req_dm_scatterlist_pool);
 
 	mutex_lock(&engine_list_mutex);
 	kfree(pfe_eng);
@@ -1058,14 +1058,9 @@ static void req_crypt_dtr(struct dm_target *ti)
 	} else {
 		deconfigure_qcrypto();
 	}
-		req_crypt_split_io_queue = NULL;
-	}
-	if (req_crypt_queue) {
-		destroy_workqueue(req_crypt_queue);
-		req_crypt_queue = NULL;
-	}
-	kmem_cache_destroy(_req_dm_scatterlist_pool);
-	kmem_cache_destroy(_req_crypt_io_pool);
+
+	if (_req_crypt_io_pool)
+		kmem_cache_destroy(_req_crypt_io_pool);
 
 	if (dev) {
 		dm_put_device(ti, dev);
@@ -1264,14 +1259,6 @@ static int req_crypt_ctr(struct dm_target *ti, unsigned int argc, char **argv)
 		goto ctr_exit;
 	}
 
-	_req_dm_scatterlist_pool = kmem_cache_create("req_dm_scatterlist",
-				sizeof(struct scatterlist) * MAX_SG_LIST,
-				 __alignof__(struct scatterlist), 0, NULL);
-	if (!_req_dm_scatterlist_pool) {
-		err = DM_REQ_CRYPT_ERROR;
-		goto ctr_exit;
-	}
-
 	encryption_mode = DM_REQ_CRYPT_ENCRYPTION_MODE_CRYPTO;
 	if (argc >= 7 && argv[6]) {
 		if (!strcmp(argv[6], "ice"))
@@ -1314,16 +1301,12 @@ static int req_crypt_ctr(struct dm_target *ti, unsigned int argc, char **argv)
 		goto ctr_exit;
 	}
 
-	req_page_pool = mempool_create_page_pool(MIN_POOL_PAGES, 0);
-	if (!req_page_pool) {
-		DMERR("%s req_page_pool not allocated\n", __func__);
-		err =  DM_REQ_CRYPT_ERROR;
-		goto ctr_exit;
-	}
-
-	req_scatterlist_pool = mempool_create_slab_pool(MIN_IOS,
-					_req_dm_scatterlist_pool);
-	BUG_ON(!req_scatterlist_pool);
+	/*
+	 * If underlying device supports flush/discard, mapped target
+	 * should also allow it
+	 */
+	ti->num_flush_bios = 1;
+	ti->num_discard_bios = 1;
 
 	err = 0;
 
