@@ -429,6 +429,7 @@ static void cpufreq_interactive_timer(unsigned long data)
 	int i, fcpu;
 	struct cpufreq_govinfo govinfo;
 	unsigned int this_hispeed_freq;
+	bool display_on = is_display_on();
 
 	if (!down_read_trylock(&ppol->enable_sem))
 		return;
