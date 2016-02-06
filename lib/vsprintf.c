@@ -162,9 +162,9 @@ static const u16 decpair[100] = {
 
 /*
  * This will print a single '0' even if r == 0, since we would
- * immediately jump to out_r where two 0s would be written but only
- * one of them accounted for in buf. This is needed by ip4_string
- * below. All other callers pass a non-zero value of r.
+ * immediately jump to out_r where two 0s would be written and one of
+ * them then discarded. This is needed by ip4_string below. All other
+ * callers pass a non-zero value of r.
 */
 static noinline_for_stack
 char *put_dec_trunc8(char *buf, unsigned r)
@@ -203,7 +203,9 @@ out_q:
 out_r:
 	/* 1 <= r < 100 */
 	*((u16 *)buf) = decpair[r];
-	buf += r < 10 ? 1 : 2;
+	buf += 2;
+	if (buf[-1] == '0')
+		buf--;
 	return buf;
 }
 
@@ -388,7 +390,8 @@ static noinline_for_stack
 char *number(char *buf, char *end, unsigned long long num,
 	     struct printf_spec spec)
 {
-	char tmp[3 * sizeof(num)];
+	/* put_dec requires 2-byte alignment of the buffer. */
+	char tmp[3 * sizeof(num)] __aligned(2);
 	char sign;
 	char locase;
 	int need_pfx = ((spec.flags & SPECIAL) && spec.base != 10);
