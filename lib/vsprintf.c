@@ -388,8 +388,10 @@ static noinline_for_stack
 char *number(char *buf, char *end, unsigned long long num,
 	     struct printf_spec spec)
 {
-	/* put_dec requires 2-byte alignment of the buffer. */
-	char tmp[3 * sizeof(num)] __aligned(2);
+	/* we are called with base 8, 10 or 16, only, thus don't need "G..."  */
+	static const char digits[16] = "0123456789ABCDEF"; /* "GHIJKLMNOPQRSTUVWXYZ"; */
+
+	char tmp[3 * sizeof(num)];
 	char sign;
 	char locase;
 	int need_pfx = ((spec.flags & SPECIAL) && spec.base != 10);
@@ -425,7 +427,7 @@ char *number(char *buf, char *end, unsigned long long num,
 	/* generate full string in tmp[], in reverse order */
 	i = 0;
 	if (num < spec.base)
-		tmp[i++] = hex_asc_upper[num] | locase;
+		tmp[i++] = digits[num] | locase;
 	else if (spec.base != 10) { /* 8 or 16 */
 		int mask = spec.base - 1;
 		int shift = 3;
@@ -433,7 +435,7 @@ char *number(char *buf, char *end, unsigned long long num,
 		if (spec.base == 16)
 			shift = 4;
 		do {
-			tmp[i++] = (hex_asc_upper[((unsigned char)num) & mask] | locase);
+			tmp[i++] = (digits[((unsigned char)num) & mask] | locase);
 			num >>= shift;
 		} while (num);
 	} else { /* base 10 */
