@@ -1364,7 +1364,11 @@ char *pointer(const char *fmt, char *buf, char *end, void *ptr,
 		}
 		break;
 	case 'a':
-		return address_val(buf, end, ptr, spec, fmt);
+		spec.flags |= SPECIAL | SMALL | ZEROPAD;
+		spec.field_width = sizeof(phys_addr_t) * 2 + 2;
+		spec.base = 16;
+		return number(buf, end,
+			      (unsigned long long) *((phys_addr_t *)ptr), spec);
 	case 'd':
 		return dentry_name(buf, end, ptr, spec, fmt);
 	case 'D':
