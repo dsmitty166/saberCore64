@@ -19,7 +19,7 @@ TOOLCHAIN_DIR="${HOME}/toolchain"
 
 # Kernel Details
 BASE_AK_VER="saberCore"
-VER=".fuckery.3.72"
+VER=".fuckery.3.73"
 AK_VER="$BASE_AK_VER$VER"
 
 # Vars
