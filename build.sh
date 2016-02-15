@@ -47,7 +47,7 @@ TOOLCHAIN_DIR="${HOME}/toolchain"
 
 # Kernel Details
 sC="fuckery"
-VER="4.01"
+VER="4.05"
 sC_VER=$sC-$VER
 
 # Vars
