@@ -30,6 +30,9 @@ then
 elif [ $NUMJOBS = "14" ];
 then
     THREAD="-j16";
+elif [ $NUMJOBS = "16" ];
+then
+    THREAD="-j18";
 else
     THREAD=-j"$NUMJOBS";
 fi;
@@ -37,23 +40,24 @@ fi;
 # Other resources
 KERNEL="Image.gz"
 DTBIMAGE="dtb"
-DEFCONFIG="benzo_defconfig"
+DEFCONFIG="saber_defconfig"
 KERNEL_DIR=`pwd`
 ANYKERNEL_DIR="$KERNEL_DIR/benzoCore/AK-AnyKernel2"
+TOOLCHAIN_DIR="${HOME}/toolchain"
 
 # Kernel Details
-BC="benzoCore64"
-VER="M1"
-BC_VER=$BC-$VER
+sC="fuckery"
+VER="4.01"
+sC_VER=$sC-$VER
 
 # Vars
 export USE_CCACHE=1
-export LOCALVERSION=~`echo $BC_VER`
+export LOCALVERSION=~`echo $sC_VER`
 export ARCH=arm64
 export SUBARCH=arm64
-export KBUILD_BUILD_USER=xanaxdroid
-export KBUILD_BUILD_HOST=benzo
-CROSS_COMPILE=../aarch64-6.0/bin/aarch64-
+export KBUILD_BUILD_USER=f100cleveland
+export KBUILD_BUILD_HOST=BuildBox
+export CROSS_COMPILE="$TOOLCHAIN_DIR/UBERTC-aarch64-linux-android-6.0-kernel/bin/aarch64-linux-android-"
 
 if [ "$USE_CCACHE" = 1 ]; then
    export CROSS_COMPILE="ccache $CROSS_COMPILE"
@@ -65,7 +69,7 @@ fi
 REPACK_DIR="$ANYKERNEL_DIR"
 PATCH_DIR="$ANYKERNEL_DIR/patch"
 MODULES_DIR="$ANYKERNEL_DIR/modules"
-ZIP_MOVE="$KERNEL_DIR/benzoCore"
+ZIP_MOVE="$KERNEL_DIR/saber-zip"
 ZIMAGE_DIR="$KERNEL_DIR/arch/arm64/boot"
 
 # Functions
@@ -105,8 +109,8 @@ function make_dtb {
 
 function make_zip {
 		cd $REPACK_DIR
-		zip -x@zipexclude -r9 `echo $BC_VER`.zip *
-		mv  `echo $BC_VER`.zip $ZIP_MOVE
+		zip -x@zipexclude -r9 `echo $sC_VER`.zip *
+		mv  `echo $sC_VER`.zip $ZIP_MOVE
 		cd $KERNEL_DIR
 }
 
@@ -121,7 +125,7 @@ echo "---------------"
 echo "Kernel Version:"
 echo "---------------"
 
-echo -e "${red}"; echo -e "${blink_red}"; echo "$BC_VER"; echo -e "${restore}";
+echo -e "${red}"; echo -e "${blink_red}"; echo "$sC_VER"; echo -e "${restore}";
 
 echo -e "${green}"
 echo "-----------------"

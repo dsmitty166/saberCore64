@@ -348,12 +348,12 @@ CHECKFLAGS     := -D__linux__ -Dlinux -D__STDC__ -Dunix -D__unix__ \
 		  -Wbitwise -Wno-return-void $(CF)
 GRAPHITE	= -fgraphite -fgraphite-identity -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block -floop-flatten
 EXTRA_OPTS	= -fmodulo-sched -fmodulo-sched-allow-regmoves -ftree-loop-vectorize -ftree-loop-distribute-patterns -ftree-slp-vectorize -fvect-cost-model -ftree-partial-pre -fgcse-after-reload -fgcse-lm -fgcse-sm -fsched-spec-load -ffast-math -fsingle-precision-constant -fpredictive-commoning
-CORTEX_OPTS	= -mcpu=cortex-a57.cortex-a53 -mtune=cortex-a57.cortex-a53
-CFLAGS_MODULE   =
-AFLAGS_MODULE   =
+GRAPHITE	= -fgraphite-identity -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block -floop-flatten -mcpu=cortex-a57.cortex-a53 -mtune=cortex-a57.cortex-a53
+FLAGS_MODULE   = $(GRAPHITE)
+AFLAGS_MODULE   = $(GRAPHITE)
 LDFLAGS_MODULE  = --strip-debug
-CFLAGS_KERNEL	=
-AFLAGS_KERNEL	=
+CFLAGS_KERNEL	= $(GRAPHITE) -fmodulo-sched -fmodulo-sched-allow-regmoves -ftree-loop-vectorize -ftree-loop-distribute-patterns -ftree-slp-vectorize -fvect-cost-model -ftree-partial-pre -fgcse-after-reload -fgcse-lm -fgcse-sm -fsched-spec-load -ffast-math -fsingle-precision-constant -fpredictive-commoning 
+AFLAGS_KERNEL	= $(GRAPHITE)
 CFLAGS_GCOV	= -fprofile-arcs -ftest-coverage
 
 
@@ -376,12 +376,16 @@ LINUXINCLUDE    := \
 
 KBUILD_CPPFLAGS := -D__KERNEL__
 
-KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing \
-                   -fno-common -Werror-implicit-function-declaration -Wno-format-security -fmodulo-sched -Wno-bool-compare \
-                   -Wno-memset-transposed-args -Wno-unused-const-variable -Wno-misleading-indentation -Wno-tautological-compare \
-                   -fgcse-after-reload -fno-delete-null-pointer-checks -ftree-loop-vectorize -ftree-loop-distribute-patterns \
-                   -ftree-slp-vectorize -fvect-cost-model -ftree-partial-pre -fgcse-lm -fgcse-sm -fsched-spec-load \
-                   -fmodulo-sched-allow-regmoves -ffast-math -funswitch-loops -fpredictive-commoning -fsingle-precision-constant \
+KBUILD_CFLAGS   := $(GRAPHITE) -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
+		   -fno-strict-aliasing -fno-common \
+		   -Werror-implicit-function-declaration \
+		   -Wno-format-security \
+           -fmodulo-sched -fmodulo-sched-allow-regmoves -ffast-math \
+           -funswitch-loops -fpredictive-commoning -fgcse-after-reload \
+		   -fno-delete-null-pointer-checks \
+		   -ftree-loop-vectorize -ftree-loop-distribute-patterns -ftree-slp-vectorize \
+           -fvect-cost-model -ftree-partial-pre \
+           -fgcse-lm -fgcse-sm -fsched-spec-load -fsingle-precision-constant 
 		   -std=gnu89 $(GRAPHITE) $(EXTRA_OPTS) $(CORTEX_OPTS)
 
 KBUILD_AFLAGS_KERNEL := $(GRAPHITE) $(CORTEX_OPTS)
@@ -606,26 +610,10 @@ ifneq ($(CONFIG_FRAME_WARN),0)
 KBUILD_CFLAGS += $(call cc-option,-Wframe-larger-than=${CONFIG_FRAME_WARN})
 endif
 
-# Handle stack protector mode.
-ifdef CONFIG_CC_STACKPROTECTOR_REGULAR
-  stackp-flag := -fstack-protector
-  ifeq ($(call cc-option, $(stackp-flag)),)
-    $(warning Cannot use CONFIG_CC_STACKPROTECTOR_REGULAR: \
-             -fstack-protector not supported by compiler)
-  endif
-else
-ifdef CONFIG_CC_STACKPROTECTOR_STRONG
-  stackp-flag := -fstack-protector-strong
-  ifeq ($(call cc-option, $(stackp-flag)),)
-    $(warning Cannot use CONFIG_CC_STACKPROTECTOR_STRONG: \
-	      -fstack-protector-strong not supported by compiler)
-  endif
-else
-  # Force off for distro compilers that enable stack protector by default.
-  stackp-flag := $(call cc-option, -fno-stack-protector)
+# Force gcc to behave correct even for buggy distributions
+ifndef CONFIG_CC_STACKPROTECTOR
+KBUILD_CFLAGS += $(call cc-option, -fno-stack-protector)
 endif
-endif
-KBUILD_CFLAGS += $(stackp-flag)
 
 # This warning generated too much noise in a regular build.
 # Use make W=1 to enable this warning (see scripts/Makefile.build)
@@ -643,6 +631,8 @@ ifndef CONFIG_FUNCTION_TRACER
 KBUILD_CFLAGS	+= -fomit-frame-pointer
 endif
 endif
+
+KBUILD_CFLAGS   += $(call cc-option, -fno-var-tracking-assignments)
 
 KBUILD_CFLAGS   += $(call cc-option, -fno-var-tracking-assignments)
 
