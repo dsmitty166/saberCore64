@@ -14,7 +14,7 @@ KERNEL="Image.gz"
 DTBIMAGE="dtb"
 DEFCONFIG="saber_defconfig"
 KERNEL_DIR="${HOME}/kernel/saber"
-ANYKERNEL_DIR="${HOME}/kernel/sC-Angler-AnyKernel2"
+ANYKERNEL_DIR="$KERNEL_DIR/saberCore/AK-AnyKernel2"
 TOOLCHAIN_DIR="${HOME}/toolchain"
 
 # Kernel Details
@@ -24,18 +24,25 @@ AK_VER="$BASE_AK_VER$VER"
 
 
 # Vars
+export USE_CCACHE=1
 export LOCALVERSION=~`echo $AK_VER`
-export CROSS_COMPILE="${HOME}/toolchain/UBERTC-aarch64-linux-android-6.0-kernel/bin/aarch64-linux-android-"
 export ARCH=arm64
 export SUBARCH=arm64
 export KBUILD_BUILD_USER=f100cleveland
 export KBUILD_BUILD_HOST=BuildBox
+export CROSS_COMPILE="$TOOLCHAIN_DIR/UBERTC-aarch64-linux-android-6.0-kernel/bin/aarch64-linux-android-"
+
+if [ "$USE_CCACHE" = 1 ]; then
+   export CROSS_COMPILE="ccache $CROSS_COMPILE"
+else
+   export CROSS_COMPILE="$CROSS_COMPILE"
+fi
 
 # Paths
 REPACK_DIR="$ANYKERNEL_DIR"
 PATCH_DIR="$ANYKERNEL_DIR/patch"
 MODULES_DIR="$ANYKERNEL_DIR/modules"
-ZIP_MOVE="${HOME}/AK-releases"
+ZIP_MOVE="$KERNEL_DIR/saber-zip"
 ZIMAGE_DIR="$KERNEL_DIR/arch/arm64/boot"
 
 # Functions
@@ -124,14 +131,13 @@ done
 
 echo
 
-while read -p "Do you want to build?" dchoice
+while read -p "Do you want to build kernel (y/n)? " dchoice
 do
 case "$dchoice" in
 	y|Y )
 		make_kernel
 		make_dtb
 		make_modules
-		make_boot
 		make_zip
 		break
 		;;
@@ -145,7 +151,6 @@ case "$dchoice" in
 		;;
 esac
 done
-
 
 echo -e "${green}"
 echo "-------------------"
